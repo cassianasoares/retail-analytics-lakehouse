@@ -1,0 +1,58 @@
+# --- Python bytecode/cache ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Virtual environments ---
+.venv/
+venv/
+ENV/
+env/
+
+# --- Testing / coverage ---
+.pytest_cache/
+.coverage
+coverage.xml
+nosetests.xml
+
+# --- Packaging / build artifacts ---
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# --- Editor/IDE ---
+*.swp
+*.swo
+*.sublime-*
+.idea/
+.vscode/
+
+/bin
+/lib
+/lib64
+
+# --- Jupyter ---
+.ipynb_checkpoints
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+
+
+# --- Data and generated / large files ---
+/data/products/
+/data/sales/
+/datalake/
+**/_delta_log/
+
+# virtualenv files
+pyvenv.cfg
+venv/
+.venv/
+env/
+ENV/
+
+# (optional) pyenv per-directory python version file
+.python-version
