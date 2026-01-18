@@ -3,9 +3,9 @@ import os
 import random
 from datetime import datetime, timedelta
 
-# ========================
-# CONFIGURAÇÕES
-# ========================
+# ==========
+# SETTINGS
+# ==========
 NUM_NEW_PRODUCTS = 10
 NUM_ORDERS = 2000
 prev_file_path = "products/ingestion_date=2026-01-01/products.csv"
@@ -26,7 +26,7 @@ categories = {
 }
 
 # ========================
-# LER PRODUTOS EXISTENTES
+# READ EXISTING PRODUCTS
 # ========================
 existing_products = []
 try:
@@ -37,7 +37,7 @@ except FileNotFoundError:
     pass
 
 # ========================
-# GERAR NOVOS PRODUTOS
+# Generate new products
 # ========================
 next_id = len(existing_products) + 1
 new_products = []
@@ -53,9 +53,9 @@ for i in range(NUM_NEW_PRODUCTS):
     })
     next_id += 1
 
-# ========================
-# SNAPSHOT COMPLETO
-# ========================
+# ===============
+# FULL SNAPSHOT
+# ===============
 all_products = existing_products + new_products
 
 os.makedirs(os.path.dirname(new_file_path), exist_ok=True)
@@ -68,9 +68,9 @@ print(f"Produtos existentes: {len(existing_products)}")
 print(f"Novos produtos adicionados: {len(new_products)}")
 print(f"Total no snapshot: {len(all_products)}")
 
-# ========================
-# COMBOS MISTOS (antigos + novos)
-# ========================
+# ==========================
+# MIXED COMBOS (old + new)
+# ==========================
 mixed_combos = [
     ["P001", "P120"],                 # café (antigo) + suco (novo)
     ["P002", "P121", "P090"],         # pão (antigo) + biscoito (novo) + arroz (antigo)
@@ -82,9 +82,9 @@ mixed_combos = [
     ["P113", "P114", "P118", "P119"], # alface + cebola (antigos) + maçã + banana (novos)
 ]
 
-# ========================
-# LER ÚLTIMO ORDER_ID EXISTENTE
-# ========================
+# =============================
+# READ LAST EXISTING ORDER_ID
+# =============================
 last_order_num = 0
 prev_sales_file = "sales/ingestion_date=2026-01-01/sales.csv"
 
@@ -93,16 +93,16 @@ try:
         reader = csv.DictReader(f)
         prev_sales = list(reader)
         if prev_sales:
-            # pega o maior número de order_id já usado
+            # retrieves the highest order_id number already used
             last_order_num = max(int(s["order_id"][1:]) for s in prev_sales)
 except FileNotFoundError:
     pass
 
-# ========================
-# GERAR NOVAS VENDAS
-# ========================
+# ====================
+# Generate new sales
+# ====================
 sales = []
-order_id_counter = last_order_num + 1   # começa depois do último ID
+order_id_counter = last_order_num + 1   # It starts after the last ID.
 START_DATE = datetime(2026, 1, 1)
 END_DATE = datetime(2026, 2, 28)
 
@@ -113,18 +113,18 @@ def random_date():
 product_dict = {p["product_id"]: p for p in all_products}
 
 for _ in range(NUM_ORDERS):
-    order_id = f"O{order_id_counter:06}"   # IDs únicos e contínuos
+    order_id = f"O{order_id_counter:06}"   # Unique and continuous IDs
     customer_id = f"C{random.randint(1, 2000):05}"
     order_date = random_date().strftime("%Y-%m-%d")
 
     chosen_products = []
 
-    # 20% dos pedidos terão combos mistos
+    # 20% of orders will have mixed combos.
     if random.random() < 0.2:
         combo = random.choice(mixed_combos)
         chosen_products.extend(combo)
 
-    # adiciona produtos aleatórios além dos combos
+    # add random products in addition to the combos
     items_in_order = random.randint(1, 4)
     chosen_products.extend(random.sample(product_dict.keys(), items_in_order))
 
@@ -145,13 +145,13 @@ for _ in range(NUM_ORDERS):
 
     order_id_counter += 1
 
-# ========================
-# SALVAR NOVAS VENDAS
-# ========================
+# ================
+# SAVE NEW SALES
+# ================
 os.makedirs(os.path.dirname(sales_file_path), exist_ok=True)
 with open(sales_file_path, "w", newline="", encoding="utf-8") as f:
     writer = csv.writer(f)
     writer.writerow(["order_id", "product_id", "category", "quantity", "price", "order_date", "customer_id"])
     writer.writerows(sales)
 
-print(f"Novas vendas geradas: {len(sales)}")
+print(f"New sales generated: {len(sales)}")

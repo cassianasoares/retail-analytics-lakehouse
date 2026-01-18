@@ -3,18 +3,18 @@ import os
 import csv
 from datetime import datetime, timedelta
 
-# ========================
-# CRIAÇÃO DE PASTAS
-# ========================
+# ==================
+# CREATING FOLDERS
+# ==================
 products_file_path = "products/ingestion_date=2026-01-01/products.csv"
 sales_file_path = "sales/ingestion_date=2026-01-01/sales.csv"
 
 os.makedirs(os.path.dirname(products_file_path), exist_ok=True)
 os.makedirs(os.path.dirname(sales_file_path), exist_ok=True)
 
-# ========================
-# CONFIGURAÇÕES
-# ========================
+# ==========
+# SETTINGS
+# ==========
 NUM_PRODUCTS = 120
 NUM_ORDERS = 5000
 START_DATE = datetime(2025, 1, 1)
@@ -23,9 +23,9 @@ END_DATE = datetime(2025, 6, 30)
 LOW_SALES_RATIO = 0.1
 random.seed(42)
 
-# ========================
-# PRODUTOS
-# ========================
+# ==========
+# PRODUCTS
+# ==========
 categories = {
     "Limpeza": ["cozinha", "lavanderia", "casa"],
     "Higiene": ["banho", "banheiro", "higiene_pessoal"],
@@ -51,10 +51,10 @@ low_sales_products = set(
     random.sample([p[0] for p in products], int(NUM_PRODUCTS * LOW_SALES_RATIO))
 )
 
-# ========================
-# COMBOS REPETIDOS
-# ========================
-# Definimos alguns combos que devem aparecer em vários pedidos
+# =================
+# REPEATED COMBOS
+# =================
+# We've defined some combo deals that should appear in multiple orders.
 combos = [
     ["P001", "P002"],                       # café + pão
     ["P010", "P020", "P021"],               # cerveja + carne + carvão
@@ -67,9 +67,9 @@ combos = [
     ["P115", "P116"], 
 ]
 
-# ========================
-# VENDAS
-# ========================
+# =======
+# SALES
+# =======
 sales = []
 order_id_counter = 1
 
@@ -84,12 +84,12 @@ for _ in range(NUM_ORDERS):
 
     chosen_products = []
 
-    # 20% dos pedidos terão combos repetidos
+    # 20% of orders will have repeated combos.
     if random.random() < 0.35:
         combo = random.choice(combos)
         chosen_products.extend(combo)
 
-    # adiciona produtos aleatórios além dos combos
+    # add random products in addition to the combos
     items_in_order = random.randint(1, 4)
     for _ in range(items_in_order):
         if random.random() < 0.15:
@@ -114,9 +114,9 @@ for _ in range(NUM_ORDERS):
 
     order_id_counter += 1
 
-# ========================
-# SALVAR CSVs
-# ========================
+# ===========
+# SAVE CSVs
+# ===========
 with open(products_file_path, "w", newline="", encoding="utf-8") as f:
     writer = csv.writer(f)
     writer.writerow(["product_id", "product_name", "category", "usage_type"])
@@ -130,7 +130,7 @@ with open(sales_file_path, "w", newline="", encoding="utf-8") as f:
     ])
     writer.writerows(sales)
 
-print("Arquivos gerados com sucesso!")
-print(f"Produtos: {len(products)}")
-print(f"Vendas (linhas): {len(sales)}")
-print(f"Produtos com baixa venda: {len(low_sales_products)}")
+print("Files generated successfully.!")
+print(f"Products: {len(products)}")
+print(f"Sales (lines): {len(sales)}")
+print(f"Products with low sales: {len(low_sales_products)}")
